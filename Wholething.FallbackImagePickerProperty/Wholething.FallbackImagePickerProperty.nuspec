@@ -1,0 +1,15 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Wholething.FallbackImagePickerProperty</id>
+    <version>0.0.1</version>
+    <title>Wholething.FallbackImagePickerProperty</title>
+    <authors>Harry Gordon and Wholething (Dean Leigh and Ault Nathanielsz)</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>FallbackImagePickerProperty is an Umbraco image picker that defines a fallback/default image that users can optionally override.</description>
+    <dependencies></dependencies>
+  </metadata>
+  <files>
+    <file src="Plugins\FallbackImagePicker\**" target="content\App_Plugins\FallbackImagePicker\" />
+  </files>
+</package>

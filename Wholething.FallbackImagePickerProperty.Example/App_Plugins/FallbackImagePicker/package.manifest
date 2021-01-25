@@ -1,0 +1,30 @@
+{
+  "propertyEditors": [
+    {
+      "alias": "FallbackImagePicker",
+      "name": "Image picker with fallback",
+      "icon": "icon-edit",
+      "group": "Pickers",
+      "editor": {
+        "view": "~/App_Plugins/FallbackImagePicker/fallback-image-picker.html",
+        "valueType": "STRING"
+      },
+      "prevalues": {
+        "fields": [
+          {
+            "label": "Maximum allowed characters",
+            "description": "If empty - no character limit",
+            "key": "maxChars",
+            "view": "number"
+          }
+        ]
+      }
+    }
+  ],
+  "javascript": [
+    "~/App_Plugins/FallbackImagePicker/fallback-image-picker.controller.js"
+  ],
+  "css": [
+    "~/App_Plugins/FallbackImagePicker/fallback-image-picker.css"
+  ]
+}

@@ -2,7 +2,7 @@
   "propertyEditors": [
     {
       "alias": "FallbackImagePicker",
-      "name": "Image picker with fallback",
+      "name": "Image Picker with Fallback",
       "icon": "icon-edit",
       "group": "Pickers",
       "editor": {
@@ -12,10 +12,16 @@
       "prevalues": {
         "fields": [
           {
-            "label": "Maximum allowed characters",
-            "description": "If empty - no character limit",
-            "key": "maxChars",
-            "view": "number"
+            "label": "Fallback Image",
+            "description": "",
+            "key": "fallbackMediaId",
+            "view": "mediapicker"
+          },
+          {
+            "label": "Start node",
+            "description": "",
+            "key": "startNodeId",
+            "view": "mediapicker"
           }
         ]
       }

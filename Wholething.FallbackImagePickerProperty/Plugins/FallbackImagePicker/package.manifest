@@ -1,0 +1,36 @@
+{
+  "propertyEditors": [
+    {
+      "alias": "FallbackImagePicker",
+      "name": "Image Picker with Fallback",
+      "icon": "icon-edit",
+      "group": "Pickers",
+      "editor": {
+        "view": "~/App_Plugins/FallbackImagePicker/fallback-image-picker.html",
+        "valueType": "STRING"
+      },
+      "prevalues": {
+        "fields": [
+          {
+            "label": "Fallback Image",
+            "description": "",
+            "key": "fallbackMediaId",
+            "view": "mediapicker"
+          },
+          {
+            "label": "Start node",
+            "description": "",
+            "key": "startNodeId",
+            "view": "mediapicker"
+          }
+        ]
+      }
+    }
+  ],
+  "javascript": [
+    "~/App_Plugins/FallbackImagePicker/fallback-image-picker.controller.js"
+  ],
+  "css": [
+    "~/App_Plugins/FallbackImagePicker/fallback-image-picker.css"
+  ]
+}

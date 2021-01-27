@@ -44,9 +44,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Packages\FallbackImagePicker\" />
+    <Content Include="Plugins\FallbackImagePicker\fallback-image-picker.controller.js" />
+    <Content Include="Plugins\FallbackImagePicker\fallback-image-picker.css" />
+    <Content Include="Plugins\FallbackImagePicker\fallback-image-picker.html" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Plugins\FallbackImagePicker\package.manifest" />
     <None Include="Wholething.FallbackImagePickerProperty.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

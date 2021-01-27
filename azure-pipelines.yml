@@ -31,7 +31,7 @@ steps:
 
 - task: MSBuild@1
   inputs:
-    solution: 'Wholething.FallbackTextProperty/Wholething.FallbackTextProperty.csproj'
+    solution: 'Wholething.FallbackImagePickerProperty/Wholething.FallbackImagePickerProperty.csproj'
     msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
@@ -40,7 +40,7 @@ steps:
   displayName: 'NuGet pack'
   inputs:
     command: 'pack'
-    packagesToPack: 'Wholething.FallbackTextProperty/Wholething.FallbackTextProperty.nuspec'
+    packagesToPack: 'Wholething.FallbackImagePickerProperty/Wholething.FallbackImagePickerProperty.nuspec'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'NugetVersion'
 

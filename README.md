@@ -22,7 +22,7 @@ When you configure an "Image Picker with Fallback" you must specify a fallback i
 
 ![fallback-image-2](https://user-images.githubusercontent.com/28703576/106008227-fd966500-60ae-11eb-9d88-895468c12028.PNG)
 
-
+As an editor, users will see the default image and optionally be able to override the image.
 
 ![fallback-image-1b](https://user-images.githubusercontent.com/28703576/106008231-fec79200-60ae-11eb-9aba-80f1697d9ca2.PNG)
 ![fallback-image-1a](https://user-images.githubusercontent.com/28703576/106008228-fe2efb80-60ae-11eb-8887-4d9a600060a8.PNG)

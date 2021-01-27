@@ -74,11 +74,7 @@ angular.module('umbraco').controller('FallbackImagePickerController',
 
                         $scope.mediaItems.push(media);
 
-                        if ($scope.model.config.idType === 'udi') {
-                            $scope.ids.push(media.udi);
-                        } else {
-                            $scope.ids.push(media.id);
-                        }
+                        $scope.ids.push(media.udi);
                     });
 
                     sync();
@@ -161,6 +157,9 @@ angular.module('umbraco').controller('FallbackImagePickerController',
                         setupViewModel();
                     });
                 });
+
+            $scope.useValue = ($scope.model.value && $scope.model.value !== '') === true;
+            $scope.useValueStr = $scope.useValue.toString();
         }
 
         function remove(index) {
@@ -267,7 +266,6 @@ angular.module('umbraco').controller('FallbackImagePickerController',
             });
         }
 
-        // Leftover from MediaPicker
         $scope.sortableOptions = {
             containment: 'parent',
             cursor: 'move',
@@ -288,23 +286,6 @@ angular.module('umbraco').controller('FallbackImagePickerController',
             }
         };
 
-        $scope.fallbackSortableOptions = {
-            containment: 'parent',
-            cursor: 'move',
-            tolerance: 'pointer',
-            disabled: true,
-            items: 'li:not(.add-wrapper)',
-            cancel: '.unsortable',
-            update: function () {
-                setDirty();
-                $timeout(function () {
-                    $scope.ids = $scope.fallbackMediaItems.map(media => $scope.model.config.idType === 'udi' ? media.udi : media.id);
-
-                    sync();
-                });
-            }
-        };
-
         var removeAllEntriesAction = {
             labelKey: 'clipboard_labelForRemoveAllEntries',
             labelTokens: [],
@@ -312,6 +293,20 @@ angular.module('umbraco').controller('FallbackImagePickerController',
             method: removeAllEntries,
             isDisabled: true
         };
+
+        $scope.onUseValueChange = function () {
+            // Annoyingly radio button value is a string
+            $scope.useValue = $scope.useValueStr === 'true';
+        };
+
+        $scope.$on("formSubmitting", function () {
+            if (!$scope.useValue) {
+                $scope.model.value = null;
+                $scope.mediaItems.length = 0; 
+                $scope.ids.length = 0;
+                sync();
+            }
+        });
 
         init();
 

@@ -8,7 +8,7 @@ using Umbraco.Core.PropertyEditors;
 using Umbraco.Web.PropertyEditors;
 using Umbraco.Web.PublishedCache;
 
-namespace Wholething.FallbackImagePickerProperty.Example.ValueConverters
+namespace $rootnamespace$.ValueConverters
 {
     public class FallbackImagePickerValueConverter : PropertyValueConverterBase
     {

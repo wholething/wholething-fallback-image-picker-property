@@ -11,6 +11,7 @@
     <dependencies></dependencies>
   </metadata>
   <files>
+    <file src="Templates\ValueConverters\**" target="content\ValueConverters\" />
     <file src="Plugins\FallbackImagePicker\**" target="content\App_Plugins\FallbackImagePicker\" />
   </files>
 </package>

@@ -3,8 +3,8 @@
     {
       "alias": "FallbackImagePicker",
       "name": "Image Picker with Fallback",
-      "icon": "icon-edit",
-      "group": "Pickers",
+      "icon": "icon-picture",
+      "group": "Media",
       "editor": {
         "view": "~/App_Plugins/FallbackImagePicker/fallback-image-picker.html",
         "valueType": "STRING"

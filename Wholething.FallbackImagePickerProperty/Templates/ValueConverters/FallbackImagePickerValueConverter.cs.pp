@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
-using Umbraco.Web.PropertyEditors;
 using Umbraco.Web.PublishedCache;
 
 namespace $rootnamespace$.ValueConverters
@@ -17,13 +17,15 @@ namespace $rootnamespace$.ValueConverters
 
         private readonly IPublishedModelFactory _publishedModelFactory;
         private readonly IPublishedSnapshotAccessor _publishedSnapshotAccessor;
+        private readonly ILogger _logger;
 
         public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
-            IPublishedModelFactory publishedModelFactory)
+            IPublishedModelFactory publishedModelFactory, ILogger logger)
         {
             _publishedSnapshotAccessor = publishedSnapshotAccessor ??
                                          throw new ArgumentNullException(nameof(publishedSnapshotAccessor));
             _publishedModelFactory = publishedModelFactory;
+            _logger = logger;
         }
 
         public override bool IsConverter(IPublishedPropertyType propertyType)
@@ -57,7 +59,7 @@ namespace $rootnamespace$.ValueConverters
             var udis = (Udi[])source;
             var mediaItems = new List<IPublishedContent>();
 
-            if (source == null) return GetFallbackMediaItem(owner, propertyType);
+            if (source == null) return TryGetFallbackMediaItem(owner, propertyType);
 
             if (udis.Any())
             {
@@ -79,6 +81,19 @@ namespace $rootnamespace$.ValueConverters
         private object FirstOrDefault(IList mediaItems)
         {
             return mediaItems.Count == 0 ? null : mediaItems[0];
+        }
+
+        private IPublishedContent TryGetFallbackMediaItem(IPublishedElement owner, IPublishedPropertyType propertyType)
+        {
+            try
+            {
+                return GetFallbackMediaItem(owner, propertyType);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<FallbackImagePickerValueConverter>("Could not retrieve fallback media item", ex);
+                return null;
+            }
         }
 
         private IPublishedContent GetFallbackMediaItem(IPublishedElement owner, IPublishedPropertyType propertyType)

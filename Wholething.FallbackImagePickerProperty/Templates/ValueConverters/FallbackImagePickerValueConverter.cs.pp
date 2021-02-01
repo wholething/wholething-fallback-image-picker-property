@@ -57,7 +57,7 @@ namespace $rootnamespace$.ValueConverters
             var udis = (Udi[])source;
             var mediaItems = new List<IPublishedContent>();
 
-            if (source == null) return GetFallbackMediaItem(propertyType);
+            if (source == null) return GetFallbackMediaItem(owner, propertyType);
 
             if (udis.Any())
             {
@@ -81,11 +81,40 @@ namespace $rootnamespace$.ValueConverters
             return mediaItems.Count == 0 ? null : mediaItems[0];
         }
 
-        private IPublishedContent GetFallbackMediaItem(IPublishedPropertyType propertyType)
+        private IPublishedContent GetFallbackMediaItem(IPublishedElement owner, IPublishedPropertyType propertyType)
         {
-            var fallbackId = (string)((Dictionary<string, object>)propertyType.DataType.Configuration)["fallbackMediaId"];
+            var config = ((Dictionary<string, object>) propertyType.DataType.Configuration);
 
-            GuidUdi.TryParse(fallbackId, out var guidUdi);
+            config.TryGetValue("fallbackMediaId", out var fallbackMediaId);
+            if (fallbackMediaId is string fallbackMediaIdStr && !string.IsNullOrEmpty(fallbackMediaIdStr))
+            {
+                return GetMediaItemFromUdiString(fallbackMediaIdStr);
+            }
+
+            config.TryGetValue("fallbackMediaProperty", out var fallbackMediaProperty);
+            if (fallbackMediaProperty is string fallbackMediaPropertyStr && !string.IsNullOrEmpty(fallbackMediaPropertyStr))
+            {
+                var parts = fallbackMediaPropertyStr.Trim().Split(':');
+                if (parts.Length == 1)
+                {
+                    var property = owner.GetProperty(parts[0]);
+                    return GetMediaItemFromUdiString((string) property.GetSourceValue());
+                }
+                if (parts.Length == 2)
+                {
+                    var nodeId = int.Parse(parts[0]);
+                    var node = _publishedSnapshotAccessor.PublishedSnapshot.Content.GetById(nodeId);
+                    var property = node.GetProperty(parts[1]);
+                    return GetMediaItemFromUdiString((string)property.GetSourceValue());
+                }
+            }
+
+            return null;
+        }
+
+        private IPublishedContent GetMediaItemFromUdiString(string udiString)
+        {
+            GuidUdi.TryParse(udiString, out var guidUdi);
             if (guidUdi.Guid == Guid.Empty) return null;
 
             return _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(guidUdi.Guid);

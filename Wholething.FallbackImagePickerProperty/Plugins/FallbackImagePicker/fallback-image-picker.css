@@ -23,3 +23,7 @@
     color: #e9e9eb;
     border: 2px #e9e9eb dashed;
 }
+
+.fallback-image-picker .fallback-images .umb-sortable-thumbnails {
+    height: 140px;
+}

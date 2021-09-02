@@ -34,7 +34,6 @@ steps:
     command: 'build'
     projects: '$(packageProject)'
 
-
 - task: DotNetCoreCLI@2
   displayName: 'dotnet nuget pack'
   inputs:

@@ -2,19 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+#if NET5_0_OR_GREATER
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.PublishedCache;
+#else
 using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
-using Umbraco.Web.PropertyEditors;
 using Umbraco.Web.PublishedCache;
+#endif
 
-namespace $rootnamespace$.ValueConverters
+namespace Wholething.FallbackImagePickerProperty.ValueConverters
 {
     public class FallbackImagePickerValueConverter : PropertyValueConverterBase
     {
-        // hard-coding "image" here but that's how it works at UI level too
-        private const string ImageTypeAlias = "image";
-
         private readonly IPublishedModelFactory _publishedModelFactory;
         private readonly IPublishedSnapshotAccessor _publishedSnapshotAccessor;
 
@@ -46,7 +50,7 @@ namespace $rootnamespace$.ValueConverters
 
             var nodeIds = source.ToString()
                 .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(Udi.Parse)
+                .Select(Udi.Create)
                 .ToArray();
             return nodeIds;
         }
@@ -54,14 +58,14 @@ namespace $rootnamespace$.ValueConverters
         public override object ConvertIntermediateToObject(IPublishedElement owner, IPublishedPropertyType propertyType,
             PropertyCacheLevel cacheLevel, object source, bool preview)
         {
-            var udis = (Udi[])source;
+            var ids = (Udi[])source;
             var mediaItems = new List<IPublishedContent>();
 
             if (source == null) return GetFallbackMediaItem(propertyType);
 
-            if (udis.Any())
+            if (ids.Any())
             {
-                foreach (var udi in udis)
+                foreach (var udi in ids)
                 {
                     var guidUdi = udi as GuidUdi;
                     if (guidUdi == null) continue;
@@ -85,10 +89,10 @@ namespace $rootnamespace$.ValueConverters
         {
             var fallbackId = (string)((Dictionary<string, object>)propertyType.DataType.Configuration)["fallbackMediaId"];
 
-            GuidUdi.TryParse(fallbackId, out var guidUdi);
-            if (guidUdi.Guid == Guid.Empty) return null;
+            Guid.TryParse(fallbackId, out var id);
+            if (id == Guid.Empty) return null;
 
-            return _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(guidUdi.Guid);
+            return _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(id);
         }
     }
 }

@@ -19,7 +19,6 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
 {
     public class FallbackImagePickerValueConverter : PropertyValueConverterBase
     {
-        private readonly IPublishedModelFactory _publishedModelFactory;
         private readonly IPublishedSnapshotAccessor _publishedSnapshotAccessor;
 
         public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
@@ -27,7 +26,6 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
         {
             _publishedSnapshotAccessor = publishedSnapshotAccessor ??
                                          throw new ArgumentNullException(nameof(publishedSnapshotAccessor));
-            _publishedModelFactory = publishedModelFactory;
         }
 
         public override bool IsConverter(IPublishedPropertyType propertyType)

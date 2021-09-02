@@ -21,8 +21,7 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
     {
         private readonly IPublishedSnapshotAccessor _publishedSnapshotAccessor;
 
-        public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
-            IPublishedModelFactory publishedModelFactory)
+        public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor)
         {
             _publishedSnapshotAccessor = publishedSnapshotAccessor ??
                                          throw new ArgumentNullException(nameof(publishedSnapshotAccessor));
@@ -48,7 +47,7 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
 
             var nodeIds = source.ToString()
                 .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(Udi.Create)
+                .Select(Guid.Parse)
                 .ToArray();
             return nodeIds;
         }
@@ -56,18 +55,17 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
         public override object ConvertIntermediateToObject(IPublishedElement owner, IPublishedPropertyType propertyType,
             PropertyCacheLevel cacheLevel, object source, bool preview)
         {
-            var ids = (Udi[])source;
+            var ids = (Guid[])source;
             var mediaItems = new List<IPublishedContent>();
 
             if (source == null) return GetFallbackMediaItem(propertyType);
 
             if (ids.Any())
             {
-                foreach (var udi in ids)
+                foreach (var id in ids)
                 {
-                    var guidUdi = udi as GuidUdi;
-                    if (guidUdi == null) continue;
-                    var item = _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(guidUdi.Guid);
+                    if (id == Guid.Empty) continue;
+                    var item = _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(id);
                     if (item != null)
                         mediaItems.Add(item);
                 }

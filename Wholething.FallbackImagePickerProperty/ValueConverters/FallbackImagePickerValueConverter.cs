@@ -47,15 +47,20 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
 
             var nodeIds = source.ToString()
                 .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(Guid.Parse)
+#if NET5_0_OR_GREATER
+                .Select(id => Udi.Create(new Uri(id)))
+#else
+                .Select(Udi.Parse)
+#endif
                 .ToArray();
+
             return nodeIds;
         }
 
         public override object ConvertIntermediateToObject(IPublishedElement owner, IPublishedPropertyType propertyType,
             PropertyCacheLevel cacheLevel, object source, bool preview)
         {
-            var ids = (Guid[])source;
+            var ids = (Udi[])source;
             var mediaItems = new List<IPublishedContent>();
 
             if (source == null) return GetFallbackMediaItem(propertyType);
@@ -64,7 +69,6 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
             {
                 foreach (var id in ids)
                 {
-                    if (id == Guid.Empty) continue;
                     var item = _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(id);
                     if (item != null)
                         mediaItems.Add(item);

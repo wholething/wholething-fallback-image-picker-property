@@ -7,13 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wholething.FallbackImagePic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F55FE355-0E48-45D1-8F6A-D0FC18E87150}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		azure-pipelines.yml = azure-pipelines.yml
 		nuget.config = nuget.config
 		README.md = README.md
 		syncFromExample.bat = syncFromExample.bat
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wholething.FallbackImagePickerProperty", "Wholething.FallbackImagePickerProperty\Wholething.FallbackImagePickerProperty.csproj", "{0C386C26-5C59-4E95-8511-4C9E6D96A423}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wholething.FallbackImagePickerProperty", "Wholething.FallbackImagePickerProperty\Wholething.FallbackImagePickerProperty.csproj", "{0C386C26-5C59-4E95-8511-4C9E6D96A423}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wholething.FallbackImagePickerProperty.Examples.Umbraco9", "Wholething.FallbackImagePickerProperty.Examples.Umbraco9\Wholething.FallbackImagePickerProperty.Examples.Umbraco9.csproj", "{3E9529C7-68B7-4F22-842D-871113B97DD6}"
 EndProject

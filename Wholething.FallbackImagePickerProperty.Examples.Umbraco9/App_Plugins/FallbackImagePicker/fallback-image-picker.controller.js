@@ -17,6 +17,9 @@ angular.module('umbraco').controller('FallbackImagePickerController',
         $scope.allowEditMedia = false;
         $scope.allowAddMedia = false;
 
+        // Always use UDI as the converter expects that
+        $scope.model.config.idType = 'udi';
+
         function setupViewModel() {
             $scope.mediaItems = [];
             $scope.fallbackMediaItems = [];

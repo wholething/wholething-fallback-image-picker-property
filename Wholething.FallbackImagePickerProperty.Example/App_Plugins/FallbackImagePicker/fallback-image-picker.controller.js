@@ -17,6 +17,9 @@ angular.module('umbraco').controller('FallbackImagePickerController',
         $scope.allowEditMedia = false;
         $scope.allowAddMedia = false;
 
+        // Always use UDI as the converter expects that
+        $scope.model.config.idType = 'udi';
+
         function setupViewModel() {
             $scope.mediaItems = [];
             $scope.fallbackMediaItems = [];
@@ -84,7 +87,7 @@ angular.module('umbraco').controller('FallbackImagePickerController',
             if ($scope.model.config.fallbackMediaId) {
                 var fallbackIds = $scope.model.config.fallbackMediaId.split(',');
 
-                entityResource.getByIds(fallbackIds, 'Media').then(function(medias) {
+                entityResource.getByIds(fallbackIds, 'Media').then(function (medias) {
 
                     medias.forEach(media => {
                         if (!media.extension && media.id && media.metaData) {
@@ -302,7 +305,7 @@ angular.module('umbraco').controller('FallbackImagePickerController',
         $scope.$on("formSubmitting", function () {
             if (!$scope.useValue) {
                 $scope.model.value = null;
-                $scope.mediaItems.length = 0; 
+                $scope.mediaItems.length = 0;
                 $scope.ids.length = 0;
                 sync();
             }

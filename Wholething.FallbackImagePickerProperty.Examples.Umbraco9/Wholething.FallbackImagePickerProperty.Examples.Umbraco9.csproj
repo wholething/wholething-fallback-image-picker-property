@@ -43,6 +43,33 @@
         <None Remove="umbraco\logs\**" />
         <None Remove="umbraco\MediaCache\**" />
     </ItemGroup>
+    <ItemGroup>
+      <None Remove="App_Plugins\FallbackImagePicker\fallback-image-picker.controller.js" />
+      <None Remove="App_Plugins\FallbackImagePicker\fallback-image-picker.css" />
+      <None Remove="App_Plugins\FallbackImagePicker\fallback-image-picker.html" />
+      <None Remove="App_Plugins\FallbackImagePicker\package.manifest" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="App_Plugins\FallbackImagePicker\fallback-image-picker.controller.js">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </Content>
+      <Content Include="App_Plugins\FallbackImagePicker\fallback-image-picker.css">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </Content>
+      <Content Include="App_Plugins\FallbackImagePicker\fallback-image-picker.html">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </Content>
+      <Content Include="App_Plugins\FallbackImagePicker\package.manifest">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Wholething.FallbackImagePickerProperty\Wholething.FallbackImagePickerProperty.csproj" />
+    </ItemGroup>
 
     <!-- Set this to true if ModelsBuilder mode is not InMemoryAuto-->
     <PropertyGroup>

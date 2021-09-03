@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using Superpower;
 #if NET5_0_OR_GREATER
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -47,11 +47,7 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
 
             var nodeIds = source.ToString()
                 .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-#if NET5_0_OR_GREATER
-                .Select(id => Udi.Create(new Uri(id)))
-#else
-                .Select(Udi.Parse)
-#endif
+                .Select(ParseUdi)
                 .ToArray();
 
             return nodeIds;
@@ -69,7 +65,7 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
             {
                 foreach (var id in ids)
                 {
-                    var item = _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(id);
+                    var item = GetPublishedSnapshot().Media.GetById(id);
                     if (item != null)
                         mediaItems.Add(item);
                 }
@@ -78,6 +74,16 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
             }
 
             return source;
+        }
+
+        private IPublishedSnapshot GetPublishedSnapshot()
+        {
+#if NET5_0_OR_GREATER
+            _publishedSnapshotAccessor.TryGetPublishedSnapshot(out var publishedSnapshot);
+            return publishedSnapshot;
+#else
+            return _publishedSnapshotAccessor.PublishedSnapshot;
+#endif
         }
 
         private object FirstOrDefault(IList mediaItems)
@@ -89,10 +95,19 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
         {
             var fallbackId = (string)((Dictionary<string, object>)propertyType.DataType.Configuration)["fallbackMediaId"];
 
-            Guid.TryParse(fallbackId, out var id);
-            if (id == Guid.Empty) return null;
+            var udi = ParseUdi(fallbackId);
+            if (udi == null) return null;
 
-            return _publishedSnapshotAccessor.PublishedSnapshot.Media.GetById(id);
+            return GetPublishedSnapshot()?.Media.GetById(udi);
+        }
+
+        private Udi ParseUdi(string value)
+        {
+#if NET5_0_OR_GREATER
+            return Udi.Create(new Uri(value));
+#else
+            return Udi.Parse(value);
+#endif
         }
     }
 }

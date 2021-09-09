@@ -3,8 +3,8 @@
     {
       "alias": "FallbackImagePicker",
       "name": "Image Picker with Fallback",
-      "icon": "icon-edit",
-      "group": "Pickers",
+      "icon": "icon-picture",
+      "group": "Media",
       "editor": {
         "view": "~/App_Plugins/FallbackImagePicker/fallback-image-picker.html",
         "valueType": "STRING"
@@ -13,9 +13,15 @@
         "fields": [
           {
             "label": "Fallback Image",
-            "description": "",
+            "description": "Specify a fixed fallback image that should be used as the field default value.",
             "key": "fallbackMediaId",
             "view": "mediapicker"
+          },
+          {
+            "label": "Fallback Image Property",
+            "description": "Alternatively, specify a fallback image by node property (e.g. \"heroImage\") or properties from other nodes by node ID (e.g. \"1234:heroImage\"). Note that if you have specified a Fallback Image above then this value will be ignored.",
+            "key": "fallbackMediaProperty",
+            "view": "textstring"
           },
           {
             "label": "Start node",

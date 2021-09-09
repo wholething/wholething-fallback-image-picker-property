@@ -2,7 +2,7 @@
 // Notably, it only supports images and does not support multi picker and "ignore start node"
 
 angular.module('umbraco').controller('FallbackImagePickerController',
-    function ($scope, entityResource, mediaHelper, $timeout, userService, localizationService, editorService, angularHelper, overlayService) {
+    function ($scope, contentResource, entityResource, mediaHelper, $timeout, userService, localizationService, editorService, editorState, angularHelper, overlayService) {
 
         var vm = this;
 
@@ -16,6 +16,9 @@ angular.module('umbraco').controller('FallbackImagePickerController',
 
         $scope.allowEditMedia = false;
         $scope.allowAddMedia = false;
+
+        // Use UDIs
+        $scope.model.config.idType = 'udi';
 
         function setupViewModel() {
             $scope.mediaItems = [];
@@ -82,24 +85,67 @@ angular.module('umbraco').controller('FallbackImagePickerController',
             }
 
             if ($scope.model.config.fallbackMediaId) {
-                var fallbackIds = $scope.model.config.fallbackMediaId.split(',');
-
-                entityResource.getByIds(fallbackIds, 'Media').then(function(medias) {
-
-                    medias.forEach(media => {
-                        if (!media.extension && media.id && media.metaData) {
-                            media.extension = mediaHelper.getFileExtension(media.metaData.MediaPath);
-                        }
-
-                        // if there is no thumbnail, try getting one if the media is not a placeholder item
-                        if (!media.thumbnail && media.id && media.metaData) {
-                            media.thumbnail = mediaHelper.resolveFileFromEntity(media, true);
-                        }
-
-                        $scope.fallbackMediaItems.push(media);
-                    });
-                });
+                loadFallbackImages($scope.model.config.fallbackMediaId);
+            } else if ($scope.model.config.fallbackMediaProperty) {
+                loadFallbackImagesByProperty($scope.model.config.fallbackMediaProperty);
             }
+        }
+
+        function loadFallbackImages(mediaId) {
+            var fallbackIds = mediaId.split(',');
+
+            entityResource.getByIds(fallbackIds, 'Media').then(function (medias) {
+
+                medias.forEach(media => {
+                    if (!media.extension && media.id && media.metaData) {
+                        media.extension = mediaHelper.getFileExtension(media.metaData.MediaPath);
+                    }
+
+                    // if there is no thumbnail, try getting one if the media is not a placeholder item
+                    if (!media.thumbnail && media.id && media.metaData) {
+                        media.thumbnail = mediaHelper.resolveFileFromEntity(media, true);
+                    }
+
+                    $scope.fallbackMediaItems.push(media);
+                });
+            });
+        }
+
+        function loadFallbackImagesByProperty() {
+            var property = $scope.model.config.fallbackMediaProperty.trim();
+            var parts = property.split(':');
+            if (parts.length === 1) {
+                var value = getPropertyValue(editorState.getCurrent(), property);
+                if (value) {
+                    loadFallbackImages(value);
+                } else {
+                    console.log('Error: Could not find specified fallback property');
+                }
+            } else if (parts.length === 2) {
+                // Load node by ID
+                var nodeId = parseInt(parts[0]);
+                contentResource.getById(nodeId).then(function (node) {
+                    var value = getPropertyValue(node, parts[1]);
+                    if (value) {
+                        loadFallbackImages(value);
+                    } else {
+                        console.log('Error: Could not find specified fallback property');
+                    }
+                });
+            } else {
+                console.log('Error: Unexpected fallback image property syntax');
+                return;
+            }
+        }
+
+        function getPropertyValue(node, propertyAlias) {
+            var variant = node.variants[0];
+            for (var tab of variant.tabs) {
+                for (var property of tab.properties) {
+                    if (property.alias === propertyAlias) return property.value;
+                }
+            }
+            return null;
         }
 
         function sync() {

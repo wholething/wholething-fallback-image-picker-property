@@ -349,4 +349,7 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 Wholething.FallbackImagePickerProperty.Example/App_Data/TEMP/
+
+**/umbraco/Data/TEMP/*
+
 Wholething.FallbackImagePickerProperty.Example/App_Data/cache/

@@ -1,0 +1,8 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Home>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = null;
+}
+<p>Photo is null: @(Model.Image1 == null)</p>
+<img src="@Model.Image1?.Url()" witdh="300px" />

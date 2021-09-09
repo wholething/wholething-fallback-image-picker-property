@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<FallbackImagePickerPropertyContentFilesPath>$(MSBuildThisFileDirectory)..\content\App_Plugins\FallbackImagePicker\**\*.*</FallbackImagePickerPropertyContentFilesPath>
+	</PropertyGroup>
+
+	<Target Name="CopyFallbackImagePickerPropertyAssets" BeforeTargets="Build">
+		<ItemGroup>
+			<FallbackImagePickerPropertyContentFiles Include="$(FallbackImagePickerPropertyContentFilesPath)" />
+		</ItemGroup>
+		<Message Text="Copying FallbackImagePickerProperty files: $(FallbackImagePickerPropertyContentFilesPath) - #@(FallbackImagePickerPropertyContentFiles->Count()) files"  Importance="high" />
+		<Copy
+            SourceFiles="@(FallbackImagePickerPropertyContentFiles)"
+            DestinationFiles="@(FallbackImagePickerPropertyContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\FallbackImagePicker\%(RecursiveDir)%(Filename)%(Extension)')"
+            SkipUnchangedFiles="true" />
+
+	</Target>
+
+	<Target Name="ClearFallbackImagePickerPropertyAssets" BeforeTargets="Clean">
+		<ItemGroup>
+			<FallbackImagePickerPropertyDir Include="$(MSBuildProjectDirectory)\App_Plugins\FallbackImagePicker\" />
+		</ItemGroup>
+		<Message Text="Clear old FallbackImagePickerProperty data"  Importance="high" />
+		<RemoveDir Directories="@(FallbackImagePickerPropertyDir)"  />
+	</Target>
+
+</Project>

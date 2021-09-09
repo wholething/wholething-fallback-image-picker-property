@@ -10,6 +10,7 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.PublishedCache;
 #else
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Web.PublishedCache;
@@ -20,11 +21,15 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
     public class FallbackImagePickerValueConverter : PropertyValueConverterBase
     {
         private readonly IPublishedSnapshotAccessor _publishedSnapshotAccessor;
+        private readonly ILogger _logger;
 
-        public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor)
+        public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
+            IPublishedModelFactory publishedModelFactory, ILogger logger)
         {
             _publishedSnapshotAccessor = publishedSnapshotAccessor ??
                                          throw new ArgumentNullException(nameof(publishedSnapshotAccessor));
+            _publishedModelFactory = publishedModelFactory;
+            _logger = logger;
         }
 
         public override bool IsConverter(IPublishedPropertyType propertyType)
@@ -59,7 +64,7 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
             var ids = (Udi[])source;
             var mediaItems = new List<IPublishedContent>();
 
-            if (source == null) return GetFallbackMediaItem(propertyType);
+            if (source == null) return TryGetFallbackMediaItem(owner, propertyType);
 
             if (ids.Any())
             {
@@ -91,15 +96,54 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
             return mediaItems.Count == 0 ? null : mediaItems[0];
         }
 
-        private IPublishedContent GetFallbackMediaItem(IPublishedPropertyType propertyType)
+        private IPublishedContent TryGetFallbackMediaItem(IPublishedElement owner, IPublishedPropertyType propertyType)
         {
-            var fallbackId = (string)((Dictionary<string, object>)propertyType.DataType.Configuration)["fallbackMediaId"];
-
-            var udi = ParseUdi(fallbackId);
-            if (udi == null) return null;
-
-            return GetPublishedSnapshot()?.Media.GetById(udi);
+            try
+            {
+                return GetFallbackMediaItem(owner, propertyType);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<FallbackImagePickerValueConverter>("Could not retrieve fallback media item", ex);
+                return null;
+            }
         }
+
+        private IPublishedContent GetFallbackMediaItem(IPublishedElement owner, IPublishedPropertyType propertyType)
+        {
+            var config = ((Dictionary<string, object>) propertyType.DataType.Configuration);
+
+            config.TryGetValue("fallbackMediaId", out var fallbackMediaId);
+            if (fallbackMediaId is string fallbackMediaIdStr && !string.IsNullOrEmpty(fallbackMediaIdStr))
+            {
+                return GetMediaItemFromUdiString(fallbackMediaIdStr);
+            }
+
+            config.TryGetValue("fallbackMediaProperty", out var fallbackMediaProperty);
+            if (fallbackMediaProperty is string fallbackMediaPropertyStr && !string.IsNullOrEmpty(fallbackMediaPropertyStr))
+            {
+                var parts = fallbackMediaPropertyStr.Trim().Split(':');
+                if (parts.Length == 1)
+                {
+                    var property = owner.GetProperty(parts[0]);
+                    return GetMediaItemFromUdiString((string) property.GetSourceValue());
+                }
+                if (parts.Length == 2)
+                {
+                    var nodeId = int.Parse(parts[0]);
+                    var node = _publishedSnapshotAccessor.PublishedSnapshot.Content.GetById(nodeId);
+                    var property = node.GetProperty(parts[1]);
+                    return GetMediaItemFromUdiString((string)property.GetSourceValue());
+                }
+            }
+
+            return null;
+        }
+
+        private IPublishedContent GetMediaItemFromUdiString(string udiString)
+        {
+            GuidUdi.TryParse(udiString, out var guidUdi);
+            if (guidUdi.Guid == Guid.Empty) return null;
 
         private Udi ParseUdi(string value)
         {

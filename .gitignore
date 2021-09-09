@@ -351,3 +351,5 @@ MigrationBackup/
 Wholething.FallbackImagePickerProperty.Example/App_Data/TEMP/
 
 **/umbraco/Data/TEMP/*
+
+Wholething.FallbackImagePickerProperty.Example/App_Data/cache/

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Superpower;
+
 #if NET5_0_OR_GREATER
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -10,7 +10,6 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.PublishedCache;
 #else
 using Umbraco.Core;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Web.PublishedCache;
@@ -21,15 +20,11 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
     public class FallbackImagePickerValueConverter : PropertyValueConverterBase
     {
         private readonly IPublishedSnapshotAccessor _publishedSnapshotAccessor;
-        private readonly ILogger _logger;
 
-        public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
-            IPublishedModelFactory publishedModelFactory, ILogger logger)
+        public FallbackImagePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor)
         {
             _publishedSnapshotAccessor = publishedSnapshotAccessor ??
                                          throw new ArgumentNullException(nameof(publishedSnapshotAccessor));
-            _publishedModelFactory = publishedModelFactory;
-            _logger = logger;
         }
 
         public override bool IsConverter(IPublishedPropertyType propertyType)
@@ -102,9 +97,8 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
             {
                 return GetFallbackMediaItem(owner, propertyType);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.Error<FallbackImagePickerValueConverter>("Could not retrieve fallback media item", ex);
                 return null;
             }
         }
@@ -131,7 +125,7 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
                 if (parts.Length == 2)
                 {
                     var nodeId = int.Parse(parts[0]);
-                    var node = _publishedSnapshotAccessor.PublishedSnapshot.Content.GetById(nodeId);
+                    var node = GetPublishedSnapshot().Content.GetById(nodeId);
                     var property = node.GetProperty(parts[1]);
                     return GetMediaItemFromUdiString((string)property.GetSourceValue());
                 }
@@ -142,8 +136,9 @@ namespace Wholething.FallbackImagePickerProperty.ValueConverters
 
         private IPublishedContent GetMediaItemFromUdiString(string udiString)
         {
-            GuidUdi.TryParse(udiString, out var guidUdi);
-            if (guidUdi.Guid == Guid.Empty) return null;
+            var guidUdi = ParseUdi(udiString);
+            return GetPublishedSnapshot().Media.GetById(guidUdi);
+        }
 
         private Udi ParseUdi(string value)
         {

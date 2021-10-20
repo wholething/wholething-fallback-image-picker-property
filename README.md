@@ -2,7 +2,7 @@
 
 FallbackImagePickerProperty is an Umbraco image picker that defines a fallback/default image that users can optionally override.
 
-If you like this property editor you may also like [Wholething.FallbackTextProperty](https://github.com/harry-gordon/wholething-fallback-text-property).
+If you like this property editor you may also like [Wholething.FallbackTextProperty](https://github.com/wholething/wholething-fallback-text-property).
 
 ## Use-case
 

@@ -267,7 +267,7 @@
       <HintPath>..\packages\UmbracoCms.Web.8.10.1\lib\net472\Umbraco.Web.UI.dll</HintPath>
     </Reference>
     <Reference Include="Wholething.FallbackImagePickerProperty, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Wholething.FallbackImagePickerProperty.0.2.7-pre\lib\net472\Wholething.FallbackImagePickerProperty.dll</HintPath>
+      <HintPath>..\packages\Wholething.FallbackImagePickerProperty.1.0.1-pre\lib\net472\Wholething.FallbackImagePickerProperty.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

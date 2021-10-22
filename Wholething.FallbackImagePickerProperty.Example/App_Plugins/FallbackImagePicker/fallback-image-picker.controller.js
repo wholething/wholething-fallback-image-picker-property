@@ -348,7 +348,7 @@ angular.module('umbraco').controller('FallbackImagePickerController',
         $scope.$on("formSubmitting", function () {
             if (!$scope.useValue) {
                 $scope.model.value = null;
-                $scope.mediaItems.length = 0;
+                $scope.mediaItems.length = 0; 
                 $scope.ids.length = 0;
                 sync();
             }

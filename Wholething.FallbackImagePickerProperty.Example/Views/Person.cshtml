@@ -1,8 +1,0 @@
-﻿@using ContentModels = Umbraco.Web.PublishedModels;
-@inherits Umbraco.Web.Mvc.UmbracoViewPage<Person>
-@using Umbraco.Web;
-@{
-    Layout = "master.cshtml";
-}
-<p>Photo is null: @(Model.Photo == null)</p>
-<img src="@Model.Photo.Url()" />
